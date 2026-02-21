@@ -8,4 +8,4 @@ Projet Machine Learning pour prédire la stabilité des terrains en utilisant :
 
 Dataset : geo_stabilite_terrain_data.csv
 
-Auteur : Marwan Bakali
+Auteur : Marouane Bakali
