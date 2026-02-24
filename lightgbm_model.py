@@ -1,3 +1,7 @@
+import os
+import webbrowser
+
+import folium
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
@@ -71,6 +75,7 @@ print(confusion_matrix(Y_test,Y_pred))
 print("rapport de classification")
 print(classification_report(Y_test,Y_pred))
 
+
 conf_matrix = confusion_matrix(Y_test, Y_pred)
 plt.figure(figsize=(8, 6))
 sns.heatmap(
@@ -86,3 +91,36 @@ plt.xlabel('Prédiction du Modèle')
 plt.ylabel('Réalité du Terrain')
 plt.title('Matrice de Confusion - Stabilité des Terrains')
 plt.show()
+
+# Prédiction sur tout le dataset
+df["prediction_rf"] = model.predict(X_stand)
+
+print(df[["longitude", "latitude", "stabilite_terrain", "prediction_rf"]].head())
+
+# Centre approximatif (Nord du Maroc)
+m = folium.Map(location=[35.0, -5.9], zoom_start=8)
+
+# Couleurs selon la classe prédite
+colors = {
+    "instable": "red",
+    "moyen": "orange",
+    "stable": "green"
+}
+
+for _, row in df.iterrows():
+    folium.CircleMarker(
+        location=[row["latitude"], row["longitude"]],
+        radius=5,
+        color=colors[row["prediction_rf"]],
+        fill=True,
+        fill_opacity=0.7,
+        popup=f"""
+        <b>Zone ID:</b> {row["zone_id"]}<br>
+        <b>Réel:</b> {row["stabilite_terrain"]}<br>
+        <b>Prédit (RF):</b> {row["prediction_rf"]}
+        """
+    ).add_to(m)
+
+# Sauvegarde de la carte
+m.save("carte_random_forest.html")
+webbrowser.open(os.path.abspath("carte_random_forest.html"))

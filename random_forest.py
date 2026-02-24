@@ -19,14 +19,11 @@ print(df.isnull().sum())
 
 
 # 3-Prétraitement des données et Gestion des valeurs manque 
-df["stabilite_terrain"] = df["stabilite_terrain"].str.lower().str.strip()
-
-df["stabilite_terrain"] = df["stabilite_terrain"].replace({
-    "moyennement_stable": "moyen",
-    "moyennement stable": "moyen",
-    "moy_stable": "moyen",
-    "stable": "stable",
-    "instable": "instable"
+df['stabilite_terrain'] = df['stabilite_terrain'].str.lower().str.strip()
+df['stabilite_terrain'] = df['stabilite_terrain'].replace({
+    'moyennement_stable':'moyen',
+    'moyennement stable':'moyen',
+    'moy_stable':'moyen',
 })
 
 df.drop(columns="indice_geotech_labo",inplace=True)
@@ -65,6 +62,8 @@ print("Martice de confussion")
 print(confusion_matrix(Y_test,Y_pred))
 print("rapport de classification")
 print(classification_report(Y_test,Y_pred))
+print(model_rf.score(X_train,Y_train))
+print(model_rf.score(X_test, Y_test))
 
 conf_matrix = confusion_matrix(Y_test, Y_pred)
 plt.figure(figsize=(8, 6))
@@ -115,6 +114,3 @@ for _, row in df.iterrows():
 # Sauvegarde de la carte
 m.save("carte_random_forest.html")
 webbrowser.open(os.path.abspath("carte_random_forest.html"))
-
-print(model_rf.score(X_train,Y_train))
-print(model_rf.score(X_test, Y_test))
